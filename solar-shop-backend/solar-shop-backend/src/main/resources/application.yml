@@ -1,0 +1,50 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: solar-shop
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/solarshop
+    username: postgres
+    password: admin
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/solarshop_logs
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+jwt:
+  secret: ${JWT_SECRET:your_default_jwt_secret_key_should_be_replaced_in_production}
+  expiration: 86400000 # 24 horas
+
+logging:
+  level:
+    root: INFO
+    com.solarshop: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
