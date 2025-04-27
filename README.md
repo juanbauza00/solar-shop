@@ -1,4 +1,12 @@
+## Objetivo del Proyecto:
+El objetivo del proyecto consiste en desarrollar un sistema de e-commerce que incorpora funciones de gestión de recursos, como lo haría un ERP simplificado, que permitirá a los clientes adquirir productos de manera eficiente y a la empresa gestionar su inventario, ventas y pedidos de forma óptima.
+La solución se compone de una aplicación web con una interfaz visual moderna y responsiva que facilita la experiencia del usuario y un backend que maneja las operaciones críticas del negocio.
+
 ## Estructuración del proyecto:
+La estructuración de carpetas del proyecto fue diseñada específicamente para facilitar la migración a una arquitectura de microservicios en el futuro.
+
+### Backend
+```
 solar-shop-backend/
 ├── src/
 │   ├── main/
@@ -22,8 +30,10 @@ solar-shop-backend/
 │   │       └── application-prod.yml             # Configuración para producción
 │   └── test/
 └── pom.xml                                      # Dependencias y configuración de Maven
+```
 
-Cada microservicio (módulo) tendría su propia estructura interna:
+### Estructura interna de cada microservicio
+```
 module/<nombre-servicio>/
 ├── api/
 │   ├── controller/         # Controladores REST
@@ -36,7 +46,10 @@ module/<nombre-servicio>/
 │   ├── persistence/        # Implementaciones de repositorios
 │   └── external/           # Servicios externos e integraciones
 └── config/                 # Configuraciones específicas del módulo
+```
 
+### Frontend
+```
 solar-shop-frontend/
 ├── src/
 │   ├── app/
@@ -71,3 +84,4 @@ solar-shop-frontend/
 │   └── styles/                       # Estilos globales
 ├── angular.json
 └── package.json
+```
