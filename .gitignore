@@ -1,0 +1,91 @@
+# General
+.DS_Store
+Thumbs.db
+*.log
+
+### IDE - General ###
+.idea/
+.vscode/
+*.sublime-workspace
+*.launch
+.settings/
+.project
+.classpath
+.c9/
+.factorypath
+
+# Excepción para algunas configuraciones de VS Code
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Historial VS Code
+.history/
+
+### Backend - Java/Spring ###
+# Archivos compilados
+/solar-shop-backend/target/
+/solar-shop-backend/build/
+/solar-shop-backend/out/
+
+# Mantener archivos de Maven wrapper
+!/solar-shop-backend/.mvn/wrapper/maven-wrapper.jar
+!/solar-shop-backend/**/src/main/**/target/
+!/solar-shop-backend/**/src/test/**/target/
+!/solar-shop-backend/**/src/main/**/build/
+!/solar-shop-backend/**/src/test/**/build/
+
+# Archivos específicos de IntelliJ para Java
+/solar-shop-backend/.idea/modules.xml
+/solar-shop-backend/.idea/jarRepositories.xml
+/solar-shop-backend/.idea/compiler.xml
+/solar-shop-backend/.idea/libraries/
+/solar-shop-backend/*.iws
+/solar-shop-backend/*.iml
+/solar-shop-backend/*.ipr
+
+# NetBeans
+/solar-shop-backend/nbproject/private/
+/solar-shop-backend/nbbuild/
+/solar-shop-backend/dist/
+/solar-shop-backend/nbdist/
+/solar-shop-backend/.nb-gradle/
+
+# STS/Eclipse
+/solar-shop-backend/.apt_generated
+/solar-shop-backend/.springBeans
+/solar-shop-backend/.sts4-cache
+
+### Frontend - Angular ###
+# Archivos compilados
+/solar-shop-frontend/dist/
+/solar-shop-frontend/tmp/
+/solar-shop-frontend/out-tsc/
+/solar-shop-frontend/bazel-out/
+
+# Dependencias
+/solar-shop-frontend/node_modules/
+
+# Angular
+/solar-shop-frontend/.angular/cache
+/solar-shop-frontend/.sass-cache/
+/solar-shop-frontend/connect.lock
+/solar-shop-frontend/coverage/
+/solar-shop-frontend/libpeerconnection.log
+/solar-shop-frontend/testem.log
+/solar-shop-frontend/typings/
+
+# Logs
+npm-debug.log
+yarn-error.log
+
+# Archivos locales de configuración
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Archivos de caché
+*.cache
