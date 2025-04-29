@@ -1,0 +1,35 @@
+<div class="card h-100 shadow-sm">
+    <div class="text-center p-2">
+      <img 
+        [src]="product.imageUrl || 'assets/img/product-placeholder.jpg'" 
+        class="card-img-top"
+        [alt]="product.name"
+        style="max-height: 180px; width: auto;">
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">{{ product.name }}</h5>
+      <p class="card-text text-truncate">{{ product.description }}</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="text-primary fw-bold">${{ product.price | number:'1.2-2' }}</span>
+        <span class="badge bg-{{ product.stock > 0 ? 'success' : 'danger' }}">
+          {{ product.stock > 0 ? 'En stock' : 'Agotado' }}
+        </span>
+      </div>
+    </div>
+    <div class="card-footer bg-white border-top-0">
+      <div class="d-grid gap-2">
+        <button 
+          [routerLink]="['/products', product.id]" 
+          class="btn btn-outline-primary btn-sm">
+          Ver detalles
+        </button>
+        @if (product.stock > 0) {
+          <button 
+            (click)="addToCart()" 
+            class="btn btn-primary btn-sm">
+            Añadir al carrito
+          </button>
+        }
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,149 @@
+<div class="row">
+    <!-- Sidebar filters -->
+    <div class="col-lg-3 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Filtros</h5>
+          
+          <div class="mb-3">
+            <label for="search" class="form-label">Buscar</label>
+            <input 
+              type="text" 
+              [(ngModel)]="searchTerm" 
+              class="form-control" 
+              id="search" 
+              placeholder="Buscar productos...">
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Categoría</label>
+            @for (category of categories; track category.id) {
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="checkbox" 
+                  [id]="'category-' + category.id" 
+                  [(ngModel)]="category.checked"
+                  (change)="applyFilters()">
+                <label class="form-check-label" [for]="'category-' + category.id">
+                  {{ category.name }}
+                </label>
+              </div>
+            }
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Precio</label>
+            <div class="d-flex gap-2">
+              <input 
+                type="number" 
+                [(ngModel)]="priceRange.min" 
+                class="form-control" 
+                placeholder="Mín">
+              <input 
+                type="number" 
+                [(ngModel)]="priceRange.max" 
+                class="form-control" 
+                placeholder="Máx">
+            </div>
+            <button 
+              class="btn btn-sm btn-outline-primary w-100 mt-2"
+              (click)="applyFilters()">
+              Aplicar
+            </button>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Disponibilidad</label>
+            <div class="form-check">
+              <input 
+                class="form-check-input" 
+                type="checkbox" 
+                id="inStock" 
+                [(ngModel)]="filterInStock"
+                (change)="applyFilters()">
+              <label class="form-check-label" for="inStock">
+                Solo productos en stock
+              </label>
+            </div>
+          </div>
+          
+          <button 
+            class="btn btn-outline-secondary w-100"
+            (click)="resetFilters()">
+            Limpiar filtros
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Product list -->
+    <div class="col-lg-9">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="m-0">Productos</h2>
+        
+        <div class="d-flex align-items-center">
+          <span class="me-2">Ordenar por:</span>
+          <select class="form-select" [(ngModel)]="sortBy" (change)="sortProducts()">
+            <option value="default">Por defecto</option>
+            <option value="price-asc">Precio: Menor a Mayor</option>
+            <option value="price-desc">Precio: Mayor a Menor</option>
+            <option value="name-asc">Nombre: A-Z</option>
+            <option value="name-desc">Nombre: Z-A</option>
+          </select>
+        </div>
+      </div>
+      
+      @if (loading) {
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+      }
+      
+      @if (error) {
+        <div class="alert alert-danger">
+          {{ error }}
+        </div>
+      }
+      
+      @if (!loading && filteredProducts.length === 0) {
+        <div class="text-center py-4">
+          <p>No se encontraron productos que coincidan con los criterios de búsqueda.</p>
+          <button class="btn btn-outline-primary" (click)="resetFilters()">
+            Limpiar filtros
+          </button>
+        </div>
+      }
+      
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @for (product of filteredProducts; track product.id) {
+          <div class="col">
+            <app-product-card [product]="product"></app-product-card>
+          </div>
+        }
+      </div>
+      
+      <!-- Pagination -->
+      @if (!loading && totalPages > 1) {
+        <nav class="mt-4">
+          <ul class="pagination justify-content-center">
+            <li class="page-item" [class.disabled]="currentPage === 0">
+              <button class="page-link" (click)="changePage(currentPage - 1)">Anterior</button>
+            </li>
+            
+            @for (page of getPageRange(); track page) {
+              <li class="page-item" [class.active]="currentPage === page">
+                <button class="page-link" (click)="changePage(page)">{{ page + 1 }}</button>
+              </li>
+            }
+            
+            <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+              <button class="page-link" (click)="changePage(currentPage + 1)">Siguiente</button>
+            </li>
+          </ul>
+        </nav>
+      }
+    </div>
+  </div>

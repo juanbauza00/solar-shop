@@ -1,0 +1,143 @@
+@if (loading) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+  }
+  
+  @if (error) {
+    <div class="alert alert-danger">
+      {{ error }}
+    </div>
+  }
+  
+  @if (!loading && product) {
+    <div class="row">
+      <!-- Product images -->
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-sm overflow-hidden">
+          <img 
+            [src]="product.imageUrl || 'assets/img/product-placeholder.jpg'" 
+            class="card-img-top img-fluid"
+            [alt]="product.name">
+            
+          <!-- Thumbnails -->
+          @if (productImages.length > 1) {
+            <div class="d-flex justify-content-center p-2">
+              @for (img of productImages; track $index) {
+                <div 
+                  class="thumbnail mx-1"
+                  [class.active]="selectedImageIndex === $index"
+                  (click)="selectedImageIndex = $index">
+                  <img [src]="img" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+      
+      <!-- Product details -->
+      <div class="col-md-6">
+        <h2 class="mb-3">{{ product.name }}</h2>
+        
+        <p class="text-muted mb-3">
+          <span class="badge bg-secondary me-2">{{ product.category }}</span>
+          <span class="badge bg-{{ product.stock > 0 ? 'success' : 'danger' }}">
+            {{ product.stock > 0 ? 'En stock' : 'Agotado' }}
+          </span>
+        </p>
+        
+        <p class="fs-3 fw-bold text-primary mb-3">${{ product.price | number:'1.2-2' }}</p>
+        
+        <div class="mb-4">
+          <p>{{ product.description }}</p>
+        </div>
+        
+        <!-- Characteristics -->
+        @if (product.characteristics && product.characteristics.length > 0) {
+          <div class="mb-4">
+            <h5>Características</h5>
+            <ul class="list-group list-group-flush">
+              @for (char of product.characteristics; track char.name) {
+                <li class="list-group-item bg-transparent px-0">
+                  <span class="fw-bold">{{ char.name }}:</span> {{ char.value }}
+                </li>
+              }
+            </ul>
+          </div>
+        }
+        
+        <!-- Add to cart -->
+        <div class="mb-4">
+          <div class="d-flex align-items-center mb-3">
+            <label for="quantity" class="form-label me-3 mb-0">Cantidad:</label>
+            <div class="input-group" style="width: 140px;">
+              <button 
+                class="btn btn-outline-secondary" 
+                type="button" 
+                [disabled]="quantity <= 1"
+                (click)="decreaseQuantity()">
+                <i class="bi bi-dash"></i>
+              </button>
+              <input 
+                type="number" 
+                [(ngModel)]="quantity" 
+                min="1" 
+                [max]="product.stock" 
+                class="form-control text-center" 
+                id="quantity">
+              <button 
+                class="btn btn-outline-secondary" 
+                type="button" 
+                [disabled]="quantity >= product.stock"
+                (click)="increaseQuantity()">
+                <i class="bi bi-plus"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="d-grid gap-2">
+            <button 
+              class="btn btn-primary" 
+              [disabled]="product.stock <= 0"
+              (click)="addToCart()">
+              <i class="bi bi-cart-plus me-2"></i>Añadir al carrito
+            </button>
+            <button class="btn btn-outline-secondary" routerLink="/products">
+              <i class="bi bi-arrow-left me-2"></i>Volver a productos
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+  
+  <!-- Related products -->
+  @if (!loading && relatedProducts.length > 0) {
+    <div class="mt-5">
+      <h3 class="mb-4">Productos relacionados</h3>
+      
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        @for (relatedProduct of relatedProducts; track relatedProduct.id) {
+          <div class="col">
+            <div class="card h-100 shadow-sm">
+              <img 
+                [src]="relatedProduct.imageUrl || 'assets/img/product-placeholder.jpg'" 
+                class="card-img-top"
+                [alt]="relatedProduct.name"
+                style="height: 180px; object-fit: contain; padding: 1rem;">
+              <div class="card-body">
+                <h5 class="card-title">{{ relatedProduct.name }}</h5>
+                <p class="card-text text-primary fw-bold">${{ relatedProduct.price | number:'1.2-2' }}</p>
+              </div>
+              <div class="card-footer bg-white border-top-0">
+                <a [routerLink]="['/products', relatedProduct.id]" class="btn btn-outline-primary w-100">Ver detalle</a>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }

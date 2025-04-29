@@ -1,0 +1,222 @@
+<div class="row">
+    <div class="col-md-3 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <div class="mb-3">
+            <img 
+              src="assets/img/profile-placeholder.png" 
+              alt="Avatar" 
+              class="rounded-circle img-fluid" 
+              style="width: 120px;">
+          </div>
+          <h5 class="mb-2">{{ authService.currentUser()?.firstName }} {{ authService.currentUser()?.lastName }}</h5>
+          <p class="text-muted mb-2">{{ authService.currentUser()?.email }}</p>
+          <p class="badge bg-primary mb-3">{{ authService.currentUser()?.role }}</p>
+        </div>
+      </div>
+      
+      <div class="list-group mt-4">
+        <a routerLink="/profile" routerLinkActive="active" class="list-group-item list-group-item-action">
+          <i class="bi bi-person me-2"></i>Mi perfil
+        </a>
+        <a routerLink="/profile/orders" routerLinkActive="active" class="list-group-item list-group-item-action">
+          <i class="bi bi-box me-2"></i>Mis pedidos
+        </a>
+        <a routerLink="/profile/addresses" routerLinkActive="active" class="list-group-item list-group-item-action">
+          <i class="bi bi-geo-alt me-2"></i>Mis direcciones
+        </a>
+        <a href="javascript:void(0)" (click)="authService.logout()" class="list-group-item list-group-item-action text-danger">
+          <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+        </a>
+      </div>
+    </div>
+    
+    <div class="col-md-9">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white">
+          <h5 class="card-title m-0">Información personal</h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="profileForm" (ngSubmit)="onProfileSubmit()">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="firstName" class="form-label">Nombre</label>
+                <input 
+                  type="text" 
+                  formControlName="firstName" 
+                  class="form-control" 
+                  [ngClass]="{'is-invalid': profileSubmitted && pf.firstName.errors}" 
+                  id="firstName">
+                @if (profileSubmitted && pf.firstName.errors) {
+                  <div class="invalid-feedback">
+                    @if (pf.firstName.errors['required']) {
+                      El nombre es requerido
+                    }
+                  </div>
+                }
+              </div>
+              
+              <div class="col-md-6">
+                <label for="lastName" class="form-label">Apellido</label>
+                <input 
+                  type="text" 
+                  formControlName="lastName" 
+                  class="form-control" 
+                  [ngClass]="{'is-invalid': profileSubmitted && pf.lastName.errors}" 
+                  id="lastName">
+                @if (profileSubmitted && pf.lastName.errors) {
+                  <div class="invalid-feedback">
+                    @if (pf.lastName.errors['required']) {
+                      El apellido es requerido
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="email" class="form-label">Email</label>
+                <input 
+                  type="email" 
+                  formControlName="email" 
+                  class="form-control" 
+                  [ngClass]="{'is-invalid': profileSubmitted && pf.email.errors}" 
+                  id="email">
+                @if (profileSubmitted && pf.email.errors) {
+                  <div class="invalid-feedback">
+                    @if (pf.email.errors['required']) {
+                      El email es requerido
+                    }
+                    @if (pf.email.errors['email']) {
+                      Ingrese un email válido
+                    }
+                  </div>
+                }
+              </div>
+              
+              <div class="col-md-6">
+                <label for="phone" class="form-label">Teléfono</label>
+                <input 
+                  type="text" 
+                  formControlName="phone" 
+                  class="form-control" 
+                  id="phone">
+              </div>
+            </div>
+            
+            <div class="text-end">
+              <button type="submit" class="btn btn-primary" [disabled]="profileLoading">
+                @if (profileLoading) {
+                  <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                }
+                Guardar cambios
+              </button>
+            </div>
+            
+            @if (profileError) {
+              <div class="alert alert-danger mt-3">
+                {{ profileError }}
+              </div>
+            }
+            
+            @if (profileSuccess) {
+              <div class="alert alert-success mt-3">
+                {{ profileSuccess }}
+              </div>
+            }
+          </form>
+        </div>
+      </div>
+      
+      <div class="card shadow-sm">
+        <div class="card-header bg-white">
+          <h5 class="card-title m-0">Cambiar contraseña</h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()">
+            <div class="mb-3">
+              <label for="currentPassword" class="form-label">Contraseña actual</label>
+              <input 
+                type="password" 
+                formControlName="currentPassword" 
+                class="form-control" 
+                [ngClass]="{'is-invalid': passwordSubmitted && pwf.currentPassword.errors}" 
+                id="currentPassword">
+              @if (passwordSubmitted && pwf.currentPassword.errors) {
+                <div class="invalid-feedback">
+                  @if (pwf.currentPassword.errors['required']) {
+                    La contraseña actual es requerida
+                  }
+                </div>
+              }
+            </div>
+            
+            <div class="mb-3">
+              <label for="newPassword" class="form-label">Nueva contraseña</label>
+              <input 
+                type="password" 
+                formControlName="newPassword" 
+                class="form-control" 
+                [ngClass]="{'is-invalid': passwordSubmitted && pwf.newPassword.errors}" 
+                id="newPassword">
+              @if (passwordSubmitted && pwf.newPassword.errors) {
+                <div class="invalid-feedback">
+                  @if (pwf.newPassword.errors['required']) {
+                    La nueva contraseña es requerida
+                  }
+                  @if (pwf.newPassword.errors['minlength']) {
+                    La contraseña debe tener al menos 8 caracteres
+                  }
+                </div>
+              }
+            </div>
+            
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Confirmar nueva contraseña</label>
+              <input 
+                type="password" 
+                formControlName="confirmPassword" 
+                class="form-control" 
+                [ngClass]="{'is-invalid': passwordSubmitted && (pwf.confirmPassword.errors || passwordForm.hasError('passwordMismatch'))}" 
+                id="confirmPassword">
+              @if (passwordSubmitted) {
+                @if (pwf.confirmPassword.errors) {
+                  <div class="invalid-feedback">
+                    @if (pwf.confirmPassword.errors['required']) {
+                      Confirme su nueva contraseña
+                    }
+                  </div>
+                } @else if (passwordForm.hasError('passwordMismatch')) {
+                  <div class="invalid-feedback">
+                    Las contraseñas no coinciden
+                  </div>
+                }
+              }
+            </div>
+            
+            <div class="text-end">
+              <button type="submit" class="btn btn-primary" [disabled]="passwordLoading">
+                @if (passwordLoading) {
+                  <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                }
+                Cambiar contraseña
+              </button>
+            </div>
+            
+            @if (passwordError) {
+              <div class="alert alert-danger mt-3">
+                {{ passwordError }}
+              </div>
+            }
+            
+            @if (passwordSuccess) {
+              <div class="alert alert-success mt-3">
+                {{ passwordSuccess }}
+              </div>
+            }
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>

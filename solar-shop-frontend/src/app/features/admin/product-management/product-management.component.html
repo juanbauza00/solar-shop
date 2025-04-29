@@ -1,0 +1,174 @@
+<div class="row">
+    <!-- Sidebar -->
+    <div class="col-lg-3 col-md-4 mb-4">
+      <app-admin-sidebar></app-admin-sidebar>
+    </div>
+    
+    <!-- Main content -->
+    <div class="col-lg-9 col-md-8">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="m-0">Gestión de Productos</h2>
+        <a routerLink="/admin/products/create" class="btn btn-primary">
+          <i class="bi bi-plus-circle me-2"></i>Nuevo producto
+        </a>
+      </div>
+      
+      <!-- Filters -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="input-group">
+                <input 
+                  type="text" 
+                  [(ngModel)]="searchTerm" 
+                  (keyup.enter)="applyFilters()" 
+                  class="form-control" 
+                  placeholder="Buscar productos...">
+                <button 
+                  class="btn btn-outline-secondary" 
+                  type="button" 
+                  (click)="applyFilters()">
+                  <i class="bi bi-search"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="col-md-3">
+              <select [(ngModel)]="categoryFilter" (change)="applyFilters()" class="form-select">
+                <option value="">Todas las categorías</option>
+                <option value="Paneles solares">Paneles solares</option>
+                <option value="Inversores">Inversores</option>
+                <option value="Baterías">Baterías</option>
+                <option value="Accesorios">Accesorios</option>
+              </select>
+            </div>
+            
+            <div class="col-md-3">
+              <select [(ngModel)]="stockFilter" (change)="applyFilters()" class="form-select">
+                <option value="all">Todos los productos</option>
+                <option value="inStock">En stock</option>
+                <option value="lowStock">Stock bajo</option>
+                <option value="outOfStock">Sin stock</option>
+              </select>
+            </div>
+            
+            <div class="col-md-2 d-flex align-items-center">
+              <button 
+                class="btn btn-outline-secondary w-100" 
+                (click)="resetFilters()">
+                Limpiar filtros
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Products table -->
+      <div class="card shadow-sm">
+        <div class="card-body">
+          @if (loading) {
+            <div class="text-center py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+            </div>
+          }
+          
+          @if (error) {
+            <div class="alert alert-danger">
+              {{ error }}
+            </div>
+          }
+          
+          @if (!loading && filteredProducts.length === 0) {
+            <div class="text-center py-4">
+              <p>No se encontraron productos que coincidan con los criterios de búsqueda.</p>
+              <button class="btn btn-outline-primary" (click)="resetFilters()">
+                Limpiar filtros
+              </button>
+            </div>
+          }
+          
+          @if (!loading && filteredProducts.length > 0) {
+            <div class="table-responsive">
+              <table class="table align-middle">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (product of filteredProducts; track product.id) {
+                    <tr>
+                      <td>#{{ product.id }}</td>
+                      <td>
+                        <img 
+                          [src]="product.imageUrl || 'assets/img/product-placeholder.jpg'" 
+                          alt="{{ product.name }}" 
+                          class="img-thumbnail" 
+                          width="50">
+                      </td>
+                      <td>{{ product.name }}</td>
+                      <td>{{ product.category }}</td>
+                      <td>${{ product.price | number:'1.2-2' }}</td>
+                      <td>
+                        <span class="badge {{ getStockClass(product.stock) }}">
+                          {{ product.stock }} unidades
+                        </span>
+                      </td>
+                      <td>
+                        <span class="badge {{ product.isActive ? 'bg-success' : 'bg-danger' }}">
+                          {{ product.isActive ? 'Activo' : 'Inactivo' }}
+                        </span>
+                      </td>
+                      <td>
+                        <div class="btn-group">
+                          <a [routerLink]="['/admin/products/edit', product.id]" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i>
+                          </a>
+                          <button class="btn btn-sm btn-outline-danger" (click)="deleteProduct(product.id)">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Pagination -->
+            @if (totalPages > 1) {
+              <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item" [class.disabled]="currentPage === 0">
+                    <button class="page-link" (click)="changePage(currentPage - 1)">Anterior</button>
+                  </li>
+                  
+                  @for (i of [0, 1, 2, 3, 4]; track i) {
+                    @if (i < totalPages) {
+                      <li class="page-item" [class.active]="currentPage === i">
+                        <button class="page-link" (click)="changePage(i)">{{ i + 1 }}</button>
+                      </li>
+                    }
+                  }
+                  
+                  <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+                    <button class="page-link" (click)="changePage(currentPage + 1)">Siguiente</button>
+                  </li>
+                </ul>
+              </nav>
+            }
+          }
+        </div>
+      </div>
+    </div>
+  </div>
