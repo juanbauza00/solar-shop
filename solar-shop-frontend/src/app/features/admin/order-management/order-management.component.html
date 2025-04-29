@@ -1,0 +1,142 @@
+<div class="row">
+    <!-- Sidebar -->
+    <div class="col-lg-3 col-md-4 mb-4">
+      <app-admin-sidebar></app-admin-sidebar>
+    </div>
+    
+    <!-- Main content -->
+    <div class="col-lg-9 col-md-8">
+      <h2 class="mb-4">Gestión de Pedidos</h2>
+      
+      <!-- Filters -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="input-group">
+                <input 
+                  type="text" 
+                  [(ngModel)]="searchTerm" 
+                  (keyup.enter)="applyFilters()" 
+                  class="form-control" 
+                  placeholder="Buscar por ID...">
+                <button 
+                  class="btn btn-outline-secondary" 
+                  type="button" 
+                  (click)="applyFilters()">
+                  <i class="bi bi-search"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="col-md-3">
+              <select [(ngModel)]="statusFilter" (change)="applyFilters()" class="form-select">
+                <option value="">Todos los estados</option>
+                <option value="PENDING">Pendiente</option>
+                <option value="PROCESSING">Procesando</option>
+                <option value="SHIPPED">Enviado</option>
+                <option value="COMPLETED">Completado</option>
+                <option value="CANCELLED">Cancelado</option>
+              </select>
+            </div>
+            
+            <div class="col-md-3">
+              <select [(ngModel)]="dateFilter" (change)="applyFilters()" class="form-select">
+                <option value="">Todas las fechas</option>
+                <option value="today">Hoy</option>
+                <option value="week">Última semana</option>
+                <option value="month">Último mes</option>
+              </select>
+            </div>
+            
+            <div class="col-md-2 d-flex align-items-center">
+              <button 
+                class="btn btn-outline-secondary w-100" 
+                (click)="resetFilters()">
+                Limpiar filtros
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Orders table -->
+      <div class="card shadow-sm">
+        <div class="card-body">
+          @if (loading) {
+            <div class="text-center py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+            </div>
+          }
+          
+          @if (error) {
+            <div class="alert alert-danger">
+              {{ error }}
+            </div>
+          }
+          
+          @if (!loading && filteredOrders.length === 0) {
+            <div class="text-center py-4">
+              <p>No se encontraron pedidos que coincidan con los criterios de búsqueda.</p>
+              <button class="btn btn-outline-primary" (click)="resetFilters()">
+                Limpiar filtros
+              </button>
+            </div>
+          }
+          
+          @if (!loading && filteredOrders.length > 0) {
+            <div class="table-responsive">
+              <table class="table align-middle">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Actualización</th>
+                    <th>Estado</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (order of filteredOrders; track order.id) {
+                    <tr>
+                      <td>#{{ order.id }}</td>
+                      <td>{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                      <td>{{ order.updatedAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                      <td>
+                        <span class="badge {{ getStatusClass(order.status) }}">
+                          {{ order.status }}
+                        </span>
+                      </td>
+                      <td>${{ order.total | number:'1.2-2' }}</td>
+                      <td>
+                        <div class="d-flex gap-2">
+                          <a [routerLink]="['/admin/orders', order.id]" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i>
+                          </a>
+                          <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                              <i class="bi bi-gear"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li><a class="dropdown-item" href="javascript:void(0)" (click)="updateOrderStatus(order.id, 'PROCESSING')">Procesar</a></li>
+                              <li><a class="dropdown-item" href="javascript:void(0)" (click)="updateOrderStatus(order.id, 'SHIPPED')">Enviar</a></li>
+                              <li><a class="dropdown-item" href="javascript:void(0)" (click)="updateOrderStatus(order.id, 'COMPLETED')">Completar</a></li>
+                              <li><hr class="dropdown-divider"></li>
+                              <li><a class="dropdown-item text-danger" href="javascript:void(0)" (click)="updateOrderStatus(order.id, 'CANCELLED')">Cancelar</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,212 @@
+<div class="row">
+    <div class="col-md-3 mb-4">
+      <div class="list-group">
+        <a routerLink="/profile" routerLinkActive="active" class="list-group-item list-group-item-action">
+          <i class="bi bi-person me-2"></i>Mi perfil
+        </a>
+        <a routerLink="/profile/orders" routerLinkActive="active" class="list-group-item list-group-item-action">
+          <i class="bi bi-box me-2"></i>Mis pedidos
+        </a>
+        <a routerLink="/profile/addresses" routerLinkActive="active" class="list-group-item list-group-item-action">
+          <i class="bi bi-geo-alt me-2"></i>Mis direcciones
+        </a>
+      </div>
+    </div>
+    
+    <div class="col-md-9">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+          <h5 class="card-title m-0">Mis direcciones</h5>
+          @if (!showForm) {
+            <button class="btn btn-primary btn-sm" (click)="openAddressForm()">
+              <i class="bi bi-plus-circle me-1"></i>Agregar dirección
+            </button>
+          }
+        </div>
+        <div class="card-body">
+          @if (error) {
+            <div class="alert alert-danger">
+              {{ error }}
+            </div>
+          }
+          
+          @if (success) {
+            <div class="alert alert-success">
+              {{ success }}
+            </div>
+          }
+          
+          @if (showForm) {
+            <div class="mb-4">
+              <h6>{{ editingAddress ? 'Editar' : 'Agregar' }} dirección</h6>
+              <form [formGroup]="addressForm" (ngSubmit)="saveAddress()">
+                <div class="mb-3">
+                  <label for="addressLine" class="form-label">Dirección</label>
+                  <input 
+                    type="text" 
+                    formControlName="addressLine" 
+                    class="form-control" 
+                    [ngClass]="{'is-invalid': addressForm.get('addressLine')?.invalid && addressForm.get('addressLine')?.touched}"
+                    id="addressLine">
+                  @if (addressForm.get('addressLine')?.invalid && addressForm.get('addressLine')?.touched) {
+                    <div class="invalid-feedback">
+                      La dirección es requerida
+                    </div>
+                  }
+                </div>
+                
+                <div class="row mb-3">
+                  <div class="col-md-4">
+                    <label for="number" class="form-label">Número</label>
+                    <input 
+                      type="text" 
+                      formControlName="number" 
+                      class="form-control" 
+                      id="number">
+                  </div>
+                  
+                  <div class="col-md-4">
+                    <label for="postalCode" class="form-label">Código postal</label>
+                    <input 
+                      type="text" 
+                      formControlName="postalCode" 
+                      class="form-control" 
+                      [ngClass]="{'is-invalid': addressForm.get('postalCode')?.invalid && addressForm.get('postalCode')?.touched}"
+                      id="postalCode">
+                    @if (addressForm.get('postalCode')?.invalid && addressForm.get('postalCode')?.touched) {
+                      <div class="invalid-feedback">
+                        El código postal es requerido
+                      </div>
+                    }
+                  </div>
+                  
+                  <div class="col-md-4">
+                    <label for="city" class="form-label">Ciudad</label>
+                    <input 
+                      type="text" 
+                      formControlName="city" 
+                      class="form-control" 
+                      [ngClass]="{'is-invalid': addressForm.get('city')?.invalid && addressForm.get('city')?.touched}"
+                      id="city">
+                    @if (addressForm.get('city')?.invalid && addressForm.get('city')?.touched) {
+                      <div class="invalid-feedback">
+                        La ciudad es requerida
+                      </div>
+                    }
+                  </div>
+                </div>
+                
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="stateId" class="form-label">Provincia</label>
+                    <select 
+                      formControlName="stateId" 
+                      class="form-select" 
+                      [ngClass]="{'is-invalid': addressForm.get('stateId')?.invalid && addressForm.get('stateId')?.touched}"
+                      id="stateId">
+                      <option value="">Seleccionar provincia</option>
+                      <option value="1">Buenos Aires</option>
+                      <option value="2">Córdoba</option>
+                      <option value="3">Santa Fe</option>
+                    </select>
+                    @if (addressForm.get('stateId')?.invalid && addressForm.get('stateId')?.touched) {
+                      <div class="invalid-feedback">
+                        La provincia es requerida
+                      </div>
+                    }
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <label for="countryId" class="form-label">País</label>
+                    <select 
+                      formControlName="countryId" 
+                      class="form-select" 
+                      [ngClass]="{'is-invalid': addressForm.get('countryId')?.invalid && addressForm.get('countryId')?.touched}"
+                      id="countryId">
+                      <option value="">Seleccionar país</option>
+                      <option value="1">Argentina</option>
+                      <option value="2">Chile</option>
+                      <option value="3">Uruguay</option>
+                    </select>
+                    @if (addressForm.get('countryId')?.invalid && addressForm.get('countryId')?.touched) {
+                      <div class="invalid-feedback">
+                        El país es requerido
+                      </div>
+                    }
+                  </div>
+                </div>
+                
+                <div class="mb-3">
+                  <label for="additionalInfo" class="form-label">Información adicional</label>
+                  <textarea 
+                    formControlName="additionalInfo" 
+                    class="form-control" 
+                    id="additionalInfo" 
+                    rows="3"></textarea>
+                </div>
+                
+                <div class="d-flex justify-content-end gap-2">
+                  <button type="button" class="btn btn-outline-secondary" (click)="cancelEdit()">
+                    Cancelar
+                  </button>
+                  <button type="submit" class="btn btn-primary" [disabled]="submitting">
+                    @if (submitting) {
+                      <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                    }
+                    {{ editingAddress ? 'Actualizar' : 'Guardar' }}
+                  </button>
+                </div>
+              </form>
+            </div>
+          }
+          
+          @if (loading) {
+            <div class="text-center py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+            </div>
+          }
+          
+          @if (!loading && addresses.length === 0 && !showForm) {
+            <div class="text-center py-4">
+              <i class="bi bi-geo-alt display-4 text-muted mb-3"></i>
+              <h5>No tienes direcciones guardadas</h5>
+              <p class="text-muted mb-4">Agrega una nueva dirección para facilitar el proceso de compra.</p>
+              <button class="btn btn-primary" (click)="openAddressForm()">
+                Agregar dirección
+              </button>
+            </div>
+          }
+          
+          @if (!loading && addresses.length > 0 && !showForm) {
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+              @for (address of addresses; track address.id) {
+                <div class="col">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <h6 class="card-title mb-3">{{ address.addressLine }} {{ address.number || '' }}</h6>
+                      <p class="card-text mb-1">{{ address.city }}, {{ address.state }}</p>
+                      <p class="card-text mb-1">{{ address.country }}</p>
+                      <p class="card-text mb-1">CP: {{ address.postalCode }}</p>
+                      @if (address.additionalInfo) {
+                        <p class="card-text text-muted">{{ address.additionalInfo }}</p>
+                      }
+                    </div>
+                    <div class="card-footer bg-white d-flex justify-content-end gap-2">
+                      <button class="btn btn-sm btn-outline-primary" (click)="openAddressForm(address)">
+                        <i class="bi bi-pencil me-1"></i>Editar
+                      </button>
+                      <button class="btn btn-sm btn-outline-danger" (click)="deleteAddress(address.id)">
+                        <i class="bi bi-trash me-1"></i>Eliminar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>

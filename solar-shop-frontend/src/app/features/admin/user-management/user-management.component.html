@@ -1,0 +1,149 @@
+<div class="row">
+    <!-- Sidebar -->
+    <div class="col-lg-3 col-md-4 mb-4">
+      <app-admin-sidebar></app-admin-sidebar>
+    </div>
+    
+    <!-- Main content -->
+    <div class="col-lg-9 col-md-8">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="m-0">Gestión de Usuarios</h2>
+        <a routerLink="/admin/users/create" class="btn btn-primary">
+          <i class="bi bi-person-plus me-2"></i>Nuevo usuario
+        </a>
+      </div>
+      
+      <!-- Filters -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="input-group">
+                <input 
+                  type="text" 
+                  [(ngModel)]="searchTerm" 
+                  (keyup.enter)="applyFilters()" 
+                  class="form-control" 
+                  placeholder="Buscar usuarios...">
+                <button 
+                  class="btn btn-outline-secondary" 
+                  type="button" 
+                  (click)="applyFilters()">
+                  <i class="bi bi-search"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="col-md-2">
+              <select [(ngModel)]="roleFilter" (change)="applyFilters()" class="form-select">
+                <option value="">Todos los roles</option>
+                <option value="ADMIN">Administrador</option>
+                <option value="EMPLOYEE">Empleado</option>
+                <option value="CUSTOMER">Cliente</option>
+              </select>
+            </div>
+            
+            <div class="col-md-2">
+              <select [(ngModel)]="statusFilter" (change)="applyFilters()" class="form-select">
+                <option value="">Todos los estados</option>
+                <option value="ACTIVE">Activo</option>
+                <option value="INACTIVE">Inactivo</option>
+                <option value="LOCKED">Bloqueado</option>
+              </select>
+            </div>
+            
+            <div class="col-md-2 d-flex align-items-center">
+              <button 
+                class="btn btn-outline-secondary w-100" 
+                (click)="resetFilters()">
+                Limpiar filtros
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Users table -->
+      <div class="card shadow-sm">
+        <div class="card-body">
+          @if (loading) {
+            <div class="text-center py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+            </div>
+          }
+          
+          @if (error) {
+            <div class="alert alert-danger">
+              {{ error }}
+            </div>
+          }
+          
+          @if (!loading && filteredUsers.length === 0) {
+            <div class="text-center py-4">
+              <p>No se encontraron usuarios que coincidan con los criterios de búsqueda.</p>
+              <button class="btn btn-outline-primary" (click)="resetFilters()">
+                Limpiar filtros
+              </button>
+            </div>
+          }
+          
+          @if (!loading && filteredUsers.length > 0) {
+            <div class="table-responsive">
+              <table class="table align-middle">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Último acceso</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (user of filteredUsers; track user.id) {
+                    <tr>
+                      <td>#{{ user.id }}</td>
+                      <td>{{ user.firstName }} {{ user.lastName }}</td>
+                      <td>{{ user.email }}</td>
+                      <td>{{ user.role }}</td>
+                      <td>
+                        <span class="badge {{ getStatusClass(user.status) }}">
+                          {{ user.status }}
+                        </span>
+                      </td>
+                      <td>{{ user.lastLogin | date:'dd/MM/yyyy HH:mm' }}</td>
+                      <td>
+                        <div class="btn-group">
+                          <a [routerLink]="['/admin/users/edit', user.id]" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i>
+                          </a>
+                          <button class="btn btn-sm btn-outline-danger" (click)="deleteUser(user.id)">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                          <div class="btn-group">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                              <i class="bi bi-gear"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li><a class="dropdown-item" href="javascript:void(0)" (click)="updateUserStatus(user.id, 'ACTIVE')">Activar</a></li>
+                              <li><a class="dropdown-item" href="javascript:void(0)" (click)="updateUserStatus(user.id, 'INACTIVE')">Desactivar</a></li>
+                              <li><hr class="dropdown-divider"></li>
+                              <li><a class="dropdown-item text-danger" href="javascript:void(0)" (click)="updateUserStatus(user.id, 'LOCKED')">Bloquear</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
