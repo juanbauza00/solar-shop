@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
 import { ProductService } from '../../shared/services/product.service';
-import { Product } from '../../core/models/product.model';
+import { Product } from '../../core/models/product/product';
 
 @Component({
   selector: 'app-home',
@@ -14,15 +14,15 @@ import { Product } from '../../core/models/product.model';
 })
 export class HomeComponent implements OnInit {
   private productService = inject(ProductService);
-  
+
   featuredProducts: Product[] = [];
   loading = false;
   error = '';
-  
+
   ngOnInit(): void {
     this.loadFeaturedProducts();
   }
-  
+
   loadFeaturedProducts(): void {
     this.loading = true;
     this.productService.getProducts(0, 4).subscribe({

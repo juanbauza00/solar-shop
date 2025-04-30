@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AdminSidebarComponent } from '../shared/admin-sidebar/admin-sidebar.component';
-import { OrderService, OrderResponse } from '../../../shared/services/order.service';
+import { OrderService} from '../../../shared/services/order.service';
+import { OrderResponse } from '../../../core/models/order/orderRequest';
 
 @Component({
   selector: 'app-order-management',
@@ -27,16 +28,116 @@ export class OrderManagementComponent implements OnInit {
   
   // Mock data for demo
   mockOrders: OrderResponse[] = [
-    { id: 1001, status: 'PENDING', createdAt: '2025-04-25T08:30:00', updatedAt: '2025-04-25T08:30:00', items: [], total: 1250 },
-    { id: 1002, status: 'COMPLETED', createdAt: '2025-04-24T14:45:00', updatedAt: '2025-04-24T16:20:00', items: [], total: 750 },
-    { id: 1003, status: 'SHIPPED', createdAt: '2025-04-23T10:15:00', updatedAt: '2025-04-23T12:30:00', items: [], total: 2100 },
-    { id: 1004, status: 'CANCELLED', createdAt: '2025-04-22T09:20:00', updatedAt: '2025-04-22T11:45:00', items: [], total: 890 },
-    { id: 1005, status: 'PROCESSING', createdAt: '2025-04-21T16:10:00', updatedAt: '2025-04-21T17:00:00', items: [], total: 1540 },
-    { id: 1006, status: 'COMPLETED', createdAt: '2025-04-20T13:40:00', updatedAt: '2025-04-20T15:25:00', items: [], total: 3200 },
-    { id: 1007, status: 'PENDING', createdAt: '2025-04-19T11:05:00', updatedAt: '2025-04-19T11:05:00', items: [], total: 980 },
-    { id: 1008, status: 'SHIPPED', createdAt: '2025-04-18T14:30:00', updatedAt: '2025-04-18T16:45:00', items: [], total: 1350 },
-    { id: 1009, status: 'COMPLETED', createdAt: '2025-04-17T09:50:00', updatedAt: '2025-04-17T11:20:00', items: [], total: 2700 },
-    { id: 1010, status: 'CANCELLED', createdAt: '2025-04-16T15:15:00', updatedAt: '2025-04-16T16:30:00', items: [], total: 450 }
+    { 
+      id: 1001, 
+      status: 'PENDING', 
+      createdAt: '2025-04-25T08:30:00', 
+      updatedAt: '2025-04-25T08:30:00', 
+      items: [], 
+      total: 1250,
+      subtotal: 1033.06,
+      discount: 0,
+      taxes: 216.94
+    },
+    { 
+      id: 1002, 
+      status: 'COMPLETED', 
+      createdAt: '2025-04-24T14:45:00', 
+      updatedAt: '2025-04-24T16:20:00', 
+      items: [], 
+      total: 750,
+      subtotal: 619.83,
+      discount: 0,
+      taxes: 130.17
+    },
+    { 
+      id: 1003, 
+      status: 'SHIPPED', 
+      createdAt: '2025-04-23T10:15:00', 
+      updatedAt: '2025-04-23T12:30:00', 
+      items: [], 
+      total: 2100,
+      subtotal: 1735.54,
+      discount: 0,
+      taxes: 364.46
+    },
+    { 
+      id: 1004, 
+      status: 'CANCELLED', 
+      createdAt: '2025-04-22T09:20:00', 
+      updatedAt: '2025-04-22T11:45:00', 
+      items: [], 
+      total: 890,
+      subtotal: 735.54,
+      discount: 0,
+      taxes: 154.46
+    },
+    { 
+      id: 1005, 
+      status: 'PROCESSING', 
+      createdAt: '2025-04-21T16:10:00', 
+      updatedAt: '2025-04-21T17:00:00', 
+      items: [], 
+      total: 1540,
+      subtotal: 1272.73,
+      discount: 0,
+      taxes: 267.27
+    },
+    { 
+      id: 1006, 
+      status: 'COMPLETED', 
+      createdAt: '2025-04-20T13:40:00', 
+      updatedAt: '2025-04-20T15:25:00', 
+      items: [], 
+      total: 3200,
+      subtotal: 2644.63,
+      discount: 0,
+      taxes: 555.37
+    },
+    { 
+      id: 1007, 
+      status: 'PENDING', 
+      createdAt: '2025-04-19T11:05:00', 
+      updatedAt: '2025-04-19T11:05:00', 
+      items: [], 
+      total: 980,
+      subtotal: 809.92,
+      discount: 0,
+      taxes: 170.08
+    },
+    { 
+      id: 1008, 
+      status: 'SHIPPED', 
+      createdAt: '2025-04-18T14:30:00', 
+      updatedAt: '2025-04-18T16:45:00', 
+      items: [], 
+      total: 1350,
+      subtotal: 1115.70,
+      discount: 0,
+      taxes: 234.30
+    },
+    { 
+      id: 1009, 
+      status: 'COMPLETED', 
+      createdAt: '2025-04-17T09:50:00', 
+      updatedAt: '2025-04-17T11:20:00', 
+      items: [], 
+      total: 2700,
+      subtotal: 2231.40,
+      discount: 0,
+      taxes: 468.60
+    },
+    { 
+      id: 1010, 
+      status: 'CANCELLED', 
+      createdAt: '2025-04-16T15:15:00', 
+      updatedAt: '2025-04-16T16:30:00', 
+      items: [], 
+      total: 450,
+      subtotal: 371.90,
+      discount: 0,
+      taxes: 78.10
+    }
   ];
   
   ngOnInit(): void {

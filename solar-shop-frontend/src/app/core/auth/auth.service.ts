@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { environment } from '../../../environments/environment';
-import { User } from '../models/user';
+import { User } from '../models/user/user';
 
 @Injectable({
   providedIn: 'root'

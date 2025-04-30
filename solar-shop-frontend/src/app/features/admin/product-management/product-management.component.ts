@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AdminSidebarComponent } from '../shared/admin-sidebar/admin-sidebar.component';
 import { ProductService } from '../../../shared/services/product.service';
-import { Product } from '../../../core/models/product';
+import { Product } from '../../../core/models/product/product';
 
 @Component({
   selector: 'app-product-management',
@@ -15,26 +15,26 @@ import { Product } from '../../../core/models/product';
 })
 export class ProductManagementComponent implements OnInit {
   private productService = inject(ProductService);
-  
+
   products: Product[] = [];
   filteredProducts: Product[] = [];
   loading = false;
   error = '';
-  
+
   // Filters
   searchTerm = '';
   categoryFilter = '';
   stockFilter = 'all'; // 'all', 'inStock', 'lowStock', 'outOfStock'
-  
+
   // Pagination
   currentPage = 0;
   pageSize = 10;
   totalPages = 0;
-  
+
   ngOnInit(): void {
     this.loadProducts();
   }
-  
+
   loadProducts(): void {
     this.loading = true;
     this.productService.getProducts(this.currentPage, this.pageSize).subscribe({
@@ -52,26 +52,26 @@ export class ProductManagementComponent implements OnInit {
       }
     });
   }
-  
+
   applyFilters(): void {
     let filtered = [...this.products];
-    
+
     // Search term filter
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
-      filtered = filtered.filter(p => 
-        p.name.toLowerCase().includes(term) || 
+      filtered = filtered.filter(p =>
+        p.name.toLowerCase().includes(term) ||
         p.description.toLowerCase().includes(term)
       );
     }
-    
+
     // Category filter
     if (this.categoryFilter) {
-      filtered = filtered.filter(p => 
+      filtered = filtered.filter(p =>
         p.category === this.categoryFilter
       );
     }
-    
+
     // Stock filter
     switch (this.stockFilter) {
       case 'inStock':
@@ -84,32 +84,32 @@ export class ProductManagementComponent implements OnInit {
         filtered = filtered.filter(p => p.stock === 0);
         break;
     }
-    
+
     this.filteredProducts = filtered;
   }
-  
+
   resetFilters(): void {
     this.searchTerm = '';
     this.categoryFilter = '';
     this.stockFilter = 'all';
     this.applyFilters();
   }
-  
+
   changePage(page: number): void {
     if (page < 0 || page >= this.totalPages) {
       return;
     }
-    
+
     this.currentPage = page;
     this.loadProducts();
   }
-  
+
   getStockClass(stock: number): string {
     if (stock === 0) return 'bg-danger';
     if (stock <= 10) return 'bg-warning';
     return 'bg-success';
   }
-  
+
   deleteProduct(id: number): void {
     if (confirm('¿Está seguro que desea eliminar este producto?')) {
       // En una aplicación real, llamaría al servicio para eliminar el producto
