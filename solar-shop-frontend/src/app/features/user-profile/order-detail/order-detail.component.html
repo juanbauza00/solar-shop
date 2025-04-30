@@ -5,105 +5,105 @@
 </div>
 
 @if (loading) {
-  <div class="text-center py-5">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Cargando...</span>
-    </div>
+<div class="text-center py-5">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Cargando...</span>
   </div>
+</div>
 }
 
 @if (error) {
-  <div class="alert alert-danger">
-    {{ error }}
-  </div>
+<div class="alert alert-danger">
+  {{ error }}
+</div>
 }
 
 @if (!loading && order) {
-  <div class="card shadow-sm mb-4">
-    <div class="card-header bg-white">
-      <div class="d-flex justify-content-between align-items-center">
-        <h5 class="card-title m-0">Pedido #{{ order.id }}</h5>
-        <span class="badge {{ getStatusClass(order.status) }}">{{ order.status }}</span>
+<div class="card shadow-sm mb-4">
+  <div class="card-header bg-white">
+    <div class="d-flex justify-content-between align-items-center">
+      <h5 class="card-title m-0">Pedido #{{ order.id }}</h5>
+      <span class="badge {{ getStatusClass(order.status) }}">{{ order.status }}</span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <h6>Información del pedido</h6>
+        <p class="mb-1"><strong>Fecha:</strong> {{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+        <p class="mb-1"><strong>Estado:</strong> {{ order.status }}</p>
+        @if (order.notes) {
+        <p class="mb-1"><strong>Notas:</strong> {{ order.notes }}</p>
+        }
+      </div>
+      <div class="col-md-6">
+        <h6>Información de pago</h6>
+        <p class="mb-1"><strong>Método:</strong> {{ order.payment?.method || 'No disponible' }}</p>
+        <p class="mb-1"><strong>Estado:</strong> {{ order.payment?.status || 'No disponible' }}</p>
+        @if (order.payment?.invoiceNumber) {
+        <p class="mb-1"><strong>Nº Factura:</strong> {{ order.payment?.invoiceNumber }}</p>
+        }
       </div>
     </div>
-    <div class="card-body">
-      <div class="row mb-4">
-        <div class="col-md-6">
-          <h6>Información del pedido</h6>
-          <p class="mb-1"><strong>Fecha:</strong> {{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
-          <p class="mb-1"><strong>Estado:</strong> {{ order.status }}</p>
-          @if (order.notes) {
-            <p class="mb-1"><strong>Notas:</strong> {{ order.notes }}</p>
+
+    <h6>Productos</h6>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th class="text-center">Precio</th>
+            <th class="text-center">Cantidad</th>
+            <th class="text-center">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of order.items; track item.productId) {
+          <tr>
+            <td>{{ item.productName }}</td>
+            <td class="text-center">${{ item.unitPrice | number:'1.2-2' }}</td>
+            <td class="text-center">{{ item.quantity }}</td>
+            <td class="text-center">${{ item.total | number:'1.2-2' }}</td>
+          </tr>
           }
-        </div>
-        <div class="col-md-6">
-          <h6>Información de pago</h6>
-          <p class="mb-1"><strong>Método:</strong> {{ order.payment?.method || 'No disponible' }}</p>
-          <p class="mb-1"><strong>Estado:</strong> {{ order.payment?.status || 'No disponible' }}</p>
-          @if (order.payment?.invoiceNumber) {
-            <p class="mb-1"><strong>Nº Factura:</strong> {{ order.payment?.invoiceNumber }}</p>
-          }
-        </div>
-      </div>
-      
-      <h6>Productos</h6>
-      <div class="table-responsive">
+        </tbody>
+      </table>
+    </div>
+
+    <div class="row justify-content-end">
+      <div class="col-md-5">
         <table class="table">
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th class="text-center">Precio</th>
-              <th class="text-center">Cantidad</th>
-              <th class="text-center">Subtotal</th>
-            </tr>
-          </thead>
           <tbody>
-            @for (item of order.items; track item.productId) {
-              <tr>
-                <td>{{ item.productName }}</td>
-                <td class="text-center">${{ item.unitPrice | number:'1.2-2' }}</td>
-                <td class="text-center">{{ item.quantity }}</td>
-                <td class="text-center">${{ item.total | number:'1.2-2' }}</td>
-              </tr>
+            <tr>
+              <td>Subtotal</td>
+              <td class="text-end">${{ order.subtotal | number:'1.2-2' }}</td>
+            </tr>
+            @if (order.discount > 0) {
+            <tr>
+              <td>Descuento</td>
+              <td class="text-end">-${{ order.discount | number:'1.2-2' }}</td>
+            </tr>
             }
+            <tr>
+              <td>Impuestos</td>
+              <td class="text-end">${{ order.taxes | number:'1.2-2' }}</td>
+            </tr>
+            <tr>
+              <td><strong>Total</strong></td>
+              <td class="text-end"><strong>${{ order.total | number:'1.2-2' }}</strong></td>
+            </tr>
           </tbody>
         </table>
       </div>
-      
-      <div class="row justify-content-end">
-        <div class="col-md-5">
-          <table class="table">
-            <tbody>
-              <tr>
-                <td>Subtotal</td>
-                <td class="text-end">${{ order.subtotal | number:'1.2-2' }}</td>
-              </tr>
-              @if (order.discount > 0) {
-                <tr>
-                  <td>Descuento</td>
-                  <td class="text-end">-${{ order.discount | number:'1.2-2' }}</td>
-                </tr>
-              }
-              <tr>
-                <td>Impuestos</td>
-                <td class="text-end">${{ order.taxes | number:'1.2-2' }}</td>
-              </tr>
-              <tr>
-                <td><strong>Total</strong></td>
-                <td class="text-end"><strong>${{ order.total | number:'1.2-2' }}</strong></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
   </div>
-  
-  @if (order.status === 'COMPLETED' || order.status === 'SHIPPED') {
-    <div class="text-center">
-      <a href="#" class="btn btn-primary">
-        <i class="bi bi-file-earmark-text me-2"></i>Descargar factura
-      </a>
-    </div>
-  }
+</div>
+
+@if (order.status === 'COMPLETED' || order.status === 'SHIPPED') {
+<div class="text-center">
+  <a href="#" class="btn btn-primary">
+    <i class="bi bi-file-earmark-text me-2"></i>Descargar factura
+  </a>
+</div>
+}
 }
