@@ -1,4 +1,4 @@
-import { Address } from "./address";
+import { Address } from "../user/address";
 import { OrderItem } from "./orderItem";
 import { PaymentInfo } from "./paymentInfo";
 

@@ -1,7 +1,7 @@
 import { Component, Input, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Product } from '../../../core/models/product';
+import { Product } from '../../../core/models/product/product';
 import { CartService } from '../../../core/services/cart.service';
 
 @Component({
@@ -14,7 +14,7 @@ import { CartService } from '../../../core/services/cart.service';
 export class ProductCardComponent {
   @Input() product!: Product;
   private cartService = inject(CartService);
-  
+
   addToCart(): void {
     this.cartService.addToCart(this.product);
   }

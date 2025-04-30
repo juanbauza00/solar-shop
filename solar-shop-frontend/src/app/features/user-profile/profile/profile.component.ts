@@ -14,7 +14,8 @@ import { UserService } from '../../../shared/services/user.service';
 })
 export class ProfileComponent {
   private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
+  // Cambiar a público para que sea accesible desde la plantilla
+  public authService = inject(AuthService);
   private userService = inject(UserService);
   
   profileForm: FormGroup;
@@ -51,8 +52,14 @@ export class ProfileComponent {
     });
   }
   
-  get pf() { return this.profileForm.controls; }
-  get pwf() { return this.passwordForm.controls; }
+  // Mejorar el getter para definir correctamente el tipo de retorno
+  get pf(): { [key: string]: any } { 
+    return this.profileForm.controls; 
+  }
+  
+  get pwf(): { [key: string]: any } { 
+    return this.passwordForm.controls; 
+  }
   
   passwordMatchValidator(formGroup: FormGroup) {
     const newPassword = formGroup.get('newPassword')?.value;
