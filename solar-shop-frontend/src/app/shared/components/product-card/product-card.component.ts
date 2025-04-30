@@ -2,7 +2,7 @@ import { Component, Input, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../../core/models/product/product';
-import { CartService } from '../../../core/services/cart.service';
+import { CartService } from '../../../shared/services/cart.service';
 
 @Component({
   selector: 'app-product-card',
