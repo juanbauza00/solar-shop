@@ -24,6 +24,12 @@ export class LoginComponent {
   error = '';
   
   constructor() {
+    // Si el usuario ya está autenticado, redirigir a la página principal
+    if (this.authService.isAuthenticated()) {
+      console.log('Usuario ya autenticado, redirigiendo...');
+      this.redirectToReturnUrl();
+    }
+    
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
@@ -34,8 +40,10 @@ export class LoginComponent {
   
   onSubmit(): void {
     this.submitted = true;
+    console.log('Login form submitted');
     
     if (this.loginForm.invalid) {
+      console.log('Form is invalid');
       return;
     }
     
@@ -43,16 +51,28 @@ export class LoginComponent {
     this.error = '';
     
     const { email, password } = this.loginForm.value;
+    console.log('Attempting login with email:', email);
     
     this.authService.login(email, password).subscribe({
       next: () => {
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-        this.router.navigateByUrl(returnUrl);
+        console.log('Login successful');
+        this.redirectToReturnUrl();
       },
       error: (err) => {
         this.error = err?.message || 'Error al iniciar sesión. Verifique sus credenciales.';
         this.loading = false;
+        console.error('Login error:', err);
+      },
+      complete: () => {
+        this.loading = false;
       }
     });
+  }
+  
+  private redirectToReturnUrl(): void {
+    // Obtener la URL de retorno de los parámetros de consulta o usar la raíz
+    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    console.log('Redirecting to:', returnUrl);
+    this.router.navigateByUrl(returnUrl);
   }
 }

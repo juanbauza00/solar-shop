@@ -10,6 +10,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   
   return next(req).pipe(
     catchError(err => {
+      // ESCALAR SI HAY TIEMPO
       if (err.status === 401) {
         // Auto logout si recibimos un 401 Unauthorized
         authService.logout();

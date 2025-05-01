@@ -5,9 +5,11 @@ import com.solarshop.module.user.api.dto.LoginRequest;
 import com.solarshop.module.user.api.dto.RegisterRequest;
 import com.solarshop.module.user.api.dto.TokenResponse;
 import com.solarshop.module.user.api.dto.UserDto;
+import com.solarshop.module.user.domain.model.Role;
 import com.solarshop.module.user.domain.model.User;
 import com.solarshop.module.user.domain.repository.UserRepository;
 import com.solarshop.security.JwtTokenProvider;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -73,4 +76,7 @@ public class AuthService {
                 .user(userDto)
                 .build();
     }
+
+
+
 }

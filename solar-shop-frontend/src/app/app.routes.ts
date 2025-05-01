@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard'; 
+
 export const routes: Routes = [
   {
     path: '',
@@ -16,7 +17,6 @@ export const routes: Routes = [
   },
   {
     path: 'cart',
-    canActivate: [authGuard],
     loadChildren: () => import('./features/cart-checkout/cart-checkout.routes').then(m => m.CART_CHECKOUT_ROUTES)
   },
   {
